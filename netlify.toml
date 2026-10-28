@@ -1,0 +1,12 @@
+[build]
+  publish = "public"
+  command = "python3 scripts/csv_to_json.py && python3 scripts/fetch_rss.py"
+  functions = "netlify/functions"
+
+[build.environment]
+  PYTHON_VERSION = "3.11"
+
+[[headers]]
+  for = "/data/*"
+  [headers.values]
+    Cache-Control = "public, max-age=300"

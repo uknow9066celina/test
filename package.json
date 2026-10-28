@@ -1,0 +1,8 @@
+{
+  "name": "integrity-report-portal",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "python3 scripts/csv_to_json.py && python3 scripts/fetch_rss.py"
+  }
+}

@@ -1,0 +1,419 @@
+<!doctype html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>청렴 신고 사건 조회</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="description" content="행정안전부 청렴감사관실이 공개하는 청렴 신고 사건 처리 현황과 청렴 교육 현황, 최신 보도자료">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Nanum+Myeongjo:wght@700;800&family=IBM+Plex+Sans+KR:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* 레이아웃: 상단 현황 띠 → [필터 | 사건 카드 | 보도자료] 3단, 좁은 화면은 1단으로 쌓기 */
+:root {
+  --paper: #f3f6f6;
+  --surface: #ffffff;
+  --ink: #15222a;
+  --muted: #5a6b73;
+  --line: #d6dfe1;
+  --accent: #0b5563;
+  --accent-soft: #e0eef0;
+  --seal: #b23a2c;
+  --s-received: #6b7a90;  --s-received-bg: #eceff4;
+  --s-progress: #a8650a;  --s-progress-bg: #fbf0dc;
+  --s-transfer: #6c4aa8;  --s-transfer-bg: #efe9f8;
+  --s-done: #2a7a4b;      --s-done-bg: #e2f2e8;
+  --s-rejected: #7d6f66;  --s-rejected-bg: #efebe8;
+  --f-display: "Nanum Myeongjo", "Noto Serif KR", "Batang", serif;
+  --f-body: "IBM Plex Sans KR", "Apple SD Gothic Neo", "Malgun Gothic", system-ui, sans-serif;
+  --f-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Consolas, monospace;
+  --r: 6px;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --paper: #0f171b; --surface: #16222a; --ink: #e4ecee; --muted: #93a5ac; --line: #2a3a42;
+  --accent: #5fb7c4; --accent-soft: #173640; --seal: #e07063;
+  --s-received: #a9b6c9; --s-received-bg: #222c38; --s-progress: #e7aa4f; --s-progress-bg: #3a2c14;
+  --s-transfer: #b89ce6; --s-transfer-bg: #2d2342; --s-done: #6fcf95; --s-done-bg: #173325;
+  --s-rejected: #b9aca3; --s-rejected-bg: #2c2724; color-scheme: dark; } }
+:root[data-theme="dark"] {
+  --paper: #0f171b; --surface: #16222a; --ink: #e4ecee; --muted: #93a5ac; --line: #2a3a42;
+  --accent: #5fb7c4; --accent-soft: #173640; --seal: #e07063;
+  --s-received: #a9b6c9; --s-received-bg: #222c38; --s-progress: #e7aa4f; --s-progress-bg: #3a2c14;
+  --s-transfer: #b89ce6; --s-transfer-bg: #2d2342; --s-done: #6fcf95; --s-done-bg: #173325;
+  --s-rejected: #b9aca3; --s-rejected-bg: #2c2724; color-scheme: dark; }
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--paper); color: var(--ink); font: 15px/1.6 var(--f-body);
+  padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
+a { color: var(--accent); }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.wrap { max-width: 1320px; margin: 0 auto; }
+.mono { font-family: var(--f-mono); font-variant-numeric: tabular-nums; }
+
+/* 머리 */
+header.mast { padding-block: 28px 18px; display: flex; gap: 18px; align-items: flex-end; flex-wrap: wrap; border-bottom: 2px solid var(--ink); }
+.seal { width: 52px; height: 52px; flex: none; border: 2px solid var(--seal); color: var(--seal); border-radius: 4px;
+  display: grid; place-items: center; font: 800 15px/1.05 var(--f-display); text-align: center; letter-spacing: .04em; transform: rotate(-3deg); }
+.mast-text { flex: 1 1 320px; min-width: 0; }
+.eyebrow { font-size: 12px; letter-spacing: .12em; color: var(--muted); margin: 0 0 4px; }
+h1 { font: 800 clamp(26px, 4vw, 38px)/1.2 var(--f-display); margin: 0; text-wrap: balance; }
+.mast-note { color: var(--muted); font-size: 13px; margin: 6px 0 0; max-width: 62ch; }
+.updated { font-size: 12px; color: var(--muted); text-align: right; }
+
+/* 처리상태 띠 */
+.statusband { margin-block: 18px 6px; }
+.band-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; font-size: 13px; color: var(--muted); }
+.band-head strong { color: var(--ink); font-size: 15px; }
+.bar { display: flex; height: 14px; border-radius: 3px; overflow: hidden; margin-top: 8px; background: var(--line); }
+.bar span { display: block; height: 100%; }
+.legend { display: flex; flex-wrap: wrap; gap: 6px 16px; margin-top: 8px; font-size: 13px; }
+.legend button { all: unset; cursor: pointer; display: inline-flex; gap: 6px; align-items: center; padding: 2px 4px; border-radius: 4px; }
+.legend button:hover { background: var(--accent-soft); }
+.legend button:focus-visible { outline: 2px solid var(--accent); }
+.legend i { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+.legend b { font-weight: 600; font-variant-numeric: tabular-nums; }
+
+/* 3단 */
+.layout { display: grid; grid-template-columns: 250px minmax(0, 1fr) 300px; gap: 28px; padding-block: 20px 40px; align-items: start; }
+@media (max-width: 1100px) { .layout { grid-template-columns: 230px minmax(0, 1fr); } .news { grid-column: 1 / -1; } }
+@media (max-width: 760px) { .layout { grid-template-columns: minmax(0, 1fr); } }
+
+/* 필터 */
+.filters { position: sticky; top: calc(env(safe-area-inset-top, 0px) + 12px); display: grid; gap: 18px; }
+@media (max-width: 760px) { .filters { position: static; } }
+.fgroup { display: grid; gap: 8px; }
+.flabel { font-size: 12px; font-weight: 600; letter-spacing: .08em; color: var(--muted); }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.chip { font: 500 13px/1 var(--f-body); padding: 7px 11px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); cursor: pointer; }
+.chip:hover { border-color: var(--accent); }
+.chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--surface); }
+.chip .n { opacity: .7; margin-left: 4px; font-variant-numeric: tabular-nums; }
+input[type="search"], select { width: 100%; font: 14px var(--f-body); padding: 9px 10px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); color: var(--ink); }
+.reset { font: 500 13px var(--f-body); background: none; border: 0; color: var(--accent); cursor: pointer; padding: 0; justify-self: start; text-decoration: underline; text-underline-offset: 3px; }
+
+/* 결과 */
+.results-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
+.count { font: 800 24px/1.2 var(--f-display); margin: 0; }
+.count .mono { font-family: var(--f-mono); font-weight: 500; }
+.active-filters { font-size: 13px; color: var(--muted); }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 12px; list-style: none; margin: 0; padding: 0; }
+.card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 14px 14px 12px; display: grid; gap: 10px; border-top: 3px solid var(--st, var(--line)); }
+.card-top { display: flex; justify-content: space-between; align-items: center; gap: 8px; }
+.cid { font: 500 12px var(--f-mono); color: var(--muted); }
+.pill { font: 600 12px/1 var(--f-body); padding: 5px 8px; border-radius: 999px; color: var(--st); background: var(--st-bg); white-space: nowrap; }
+.ctype { font: 800 20px/1.2 var(--f-display); margin: 0; }
+.cmeta { display: grid; grid-template-columns: auto 1fr; gap: 3px 12px; font-size: 13px; margin: 0; }
+.cmeta dt { color: var(--muted); }
+.cmeta dd { margin: 0; font-variant-numeric: tabular-nums; }
+.more { margin-top: 16px; width: 100%; padding: 11px; font: 600 14px var(--f-body); color: var(--accent); background: var(--surface); border: 1px dashed var(--accent); border-radius: var(--r); cursor: pointer; }
+.more:hover { background: var(--accent-soft); }
+.empty { padding: 32px; text-align: center; color: var(--muted); border: 1px dashed var(--line); border-radius: var(--r); }
+
+/* 보도자료 */
+.news { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r); padding: 16px; }
+.news h2, .edu h2 { font: 800 18px/1.3 var(--f-display); margin: 0 0 2px; }
+.news .src { font-size: 12px; color: var(--muted); margin: 0 0 12px; }
+.news ol { list-style: none; margin: 0; padding: 0; display: grid; }
+.news li { padding-block: 10px; border-top: 1px solid var(--line); display: grid; gap: 3px; }
+.news li a { color: var(--ink); text-decoration: none; font-weight: 500; line-height: 1.45; }
+.news li a:hover { color: var(--accent); text-decoration: underline; }
+.news time { font: 12px var(--f-mono); color: var(--muted); }
+.feed-state { font-size: 12px; display: inline-block; padding: 2px 6px; border-radius: 4px; background: var(--accent-soft); color: var(--accent); }
+.news .links { font-size: 13px; margin-top: 12px; display: flex; flex-wrap: wrap; gap: 4px 14px; }
+
+/* 교육 현황 */
+.edu { border-top: 2px solid var(--ink); padding-block: 22px 40px; }
+.edu-sub { color: var(--muted); font-size: 13px; margin: 0 0 16px; }
+.edu-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 24px; }
+.figs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+.fig dt { font-size: 12px; color: var(--muted); }
+.fig dd { margin: 0; font: 800 26px/1.2 var(--f-display); font-variant-numeric: tabular-nums; }
+.fig dd small { font: 500 13px var(--f-body); color: var(--muted); margin-left: 2px; }
+.hbars { display: grid; gap: 8px; margin: 0; padding: 0; list-style: none; }
+.hbars li { display: grid; grid-template-columns: 92px minmax(0, 1fr) 52px; gap: 8px; align-items: center; font-size: 13px; }
+.hbars .track { height: 10px; background: var(--line); border-radius: 2px; position: relative; overflow: hidden; }
+.hbars .fill { position: absolute; inset: 0 auto 0 0; background: var(--accent); }
+.hbars .tick { position: absolute; top: -2px; bottom: -2px; width: 2px; background: var(--seal); }
+.hbars .v { text-align: right; font-variant-numeric: tabular-nums; }
+.edu-note { font-size: 12px; color: var(--muted); margin-top: 8px; }
+footer { border-top: 1px solid var(--line); padding-block: 16px 28px; font-size: 12px; color: var(--muted); }
+@media (prefers-reduced-motion: no-preference) { .card { animation: rise .25s ease-out both; } @keyframes rise { from { transform: translateY(4px); } to { transform: none; } } }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header class="mast">
+    <div class="seal" aria-hidden="true">청렴<br>신고</div>
+    <div class="mast-text">
+      <p class="eyebrow">행정안전부 청렴감사관실 · 시민 공개</p>
+      <h1>청렴 신고 사건 조회</h1>
+      <p class="mast-note">공직자 금품수수·직권남용·이해충돌 등 청렴 신고의 접수와 처리 현황입니다. 신고인 보호를 위해 개인 정보와 기관명은 공개하지 않습니다.</p>
+    </div>
+    <p class="updated" id="updated">자료 불러오는 중</p>
+  </header>
+
+  <section class="statusband" aria-label="처리상태 현황">
+    <div class="band-head"><span><strong id="totalCases">-</strong> 전체 신고</span><span id="closedRate"></span></div>
+    <div class="bar" id="bar" role="img" aria-label="처리상태별 비율"></div>
+    <div class="legend" id="legend"></div>
+  </section>
+
+  <div class="layout">
+    <aside class="filters" aria-label="검색 조건">
+      <div class="fgroup">
+        <label class="flabel" for="q">사건번호 · 지역 검색</label>
+        <input type="search" id="q" placeholder="예: CASE0120, 광주" autocomplete="off">
+      </div>
+      <div class="fgroup">
+        <span class="flabel" id="typeLabel">신고유형</span>
+        <div class="chips" id="typeChips" role="group" aria-labelledby="typeLabel"></div>
+      </div>
+      <div class="fgroup">
+        <span class="flabel" id="statusLabel">처리상태</span>
+        <div class="chips" id="statusChips" role="group" aria-labelledby="statusLabel"></div>
+      </div>
+      <div class="fgroup">
+        <label class="flabel" for="region">지역</label>
+        <select id="region"><option value="">전체 지역</option></select>
+      </div>
+      <div class="fgroup">
+        <label class="flabel" for="sort">정렬</label>
+        <select id="sort">
+          <option value="new">신고일 최신순</option>
+          <option value="old">신고일 오래된순</option>
+          <option value="days">처리기간 긴 순</option>
+        </select>
+      </div>
+      <button class="reset" id="reset" type="button">조건 모두 지우기</button>
+    </aside>
+
+    <main>
+      <div class="results-head">
+        <p class="count" id="count" aria-live="polite">결과 <span class="mono">0</span>건</p>
+        <span class="active-filters" id="activeFilters"></span>
+      </div>
+      <ul class="cards" id="cards"></ul>
+      <button class="more" id="more" type="button" hidden></button>
+    </main>
+
+    <aside class="news" aria-labelledby="newsTitle">
+      <h2 id="newsTitle">행정안전부 최신 보도자료</h2>
+      <p class="src">행정안전부 누리집 RSS · <span class="feed-state" id="feedState">불러오는 중</span></p>
+      <ol id="newsList"></ol>
+      <div class="links">
+        <a href="https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardList.do?bbsId=BBSMSTR_000000000008" target="_blank" rel="noopener">보도자료 전체</a>
+        <a href="https://www.mois.go.kr/frt/bbs/type001/commonSelectBoardList.do?bbsId=BBSMSTR_000000000009" target="_blank" rel="noopener">설명자료 전체</a>
+      </div>
+    </aside>
+  </div>
+
+  <section class="edu" aria-labelledby="eduTitle">
+    <h2 id="eduTitle">청렴 교육 현황</h2>
+    <p class="edu-sub" id="eduSub">공공기관 청렴 교육 이수 현황</p>
+    <div class="edu-grid">
+      <dl class="figs" id="eduFigs"></dl>
+      <div>
+        <p class="flabel" style="margin:0 0 10px">기관유형별 평균 교육이수율</p>
+        <ul class="hbars" id="eduBars"></ul>
+        <p class="edu-note">붉은 눈금은 청렴우수기관 최저 이수율입니다. 이수율 미기재 기관은 평균에서 제외했습니다.</p>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    청렴 신고는 국민권익위원회 청렴포털(www.clean.go.kr) 또는 국번 없이 1398에서 할 수 있습니다. 이 페이지의 사건 자료는 처리 현황 공개용 요약본입니다.
+  </footer>
+</div>
+
+<script>
+(() => {
+  const STATUS = {
+    "접수완료": ["--s-received", "--s-received-bg"],
+    "조사중":   ["--s-progress", "--s-progress-bg"],
+    "이첩":     ["--s-transfer", "--s-transfer-bg"],
+    "처리완료": ["--s-done", "--s-done-bg"],
+    "기각":     ["--s-rejected", "--s-rejected-bg"],
+  };
+  const STATUS_ORDER = Object.keys(STATUS);
+  const PAGE = 24;
+  const $ = (id) => document.getElementById(id);
+  const el = (tag, props = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(props)) {
+      if (k === "style") n.setAttribute("style", v); else if (k in n) n[k] = v; else n.setAttribute(k, v);
+    }
+    for (const k of kids) if (k != null) n.append(k);
+    return n;
+  };
+  const fmtDate = (d) => d ? d.replaceAll("-", ".") : "-";
+
+  const state = { type: "", status: "", region: "", q: "", sort: "new", shown: PAGE };
+  let cases = [];
+
+  // 필터 상태는 이 브라우저에만 기억 (저장 실패해도 동작)
+  const KEY = "integrity-filters-v1";
+  try { Object.assign(state, JSON.parse(localStorage.getItem(KEY) || "{}"), { shown: PAGE }); } catch {}
+  const save = () => { try { localStorage.setItem(KEY, JSON.stringify({ type: state.type, status: state.status, region: state.region, sort: state.sort })); } catch {} };
+
+  function chipGroup(container, values, key, counts) {
+    container.replaceChildren();
+    const all = el("button", { type: "button", className: "chip", textContent: "전체" });
+    all.setAttribute("aria-pressed", String(state[key] === ""));
+    all.onclick = () => setFilter(key, "");
+    container.append(all);
+    for (const v of values) {
+      const b = el("button", { type: "button", className: "chip" }, v, el("span", { className: "n", textContent: counts[v] || 0 }));
+      b.setAttribute("aria-pressed", String(state[key] === v));
+      b.onclick = () => setFilter(key, state[key] === v ? "" : v);
+      container.append(b);
+    }
+  }
+
+  function setFilter(key, value) { state[key] = value; state.shown = PAGE; save(); render(); }
+
+  function filtered() {
+    const q = state.q.trim().toLowerCase();
+    let list = cases.filter((c) =>
+      (!state.type || c.type === state.type) &&
+      (!state.status || c.status === state.status) &&
+      (!state.region || c.region === state.region) &&
+      (!q || c.id.toLowerCase().includes(q) || c.region.includes(q) || c.type.includes(q)));
+    if (state.sort === "old") list = list.slice().reverse();
+    if (state.sort === "days") list = list.slice().sort((a, b) => (b.days ?? -1) - (a.days ?? -1));
+    return list;
+  }
+
+  function card(c) {
+    const [fg, bg] = STATUS[c.status] || ["--muted", "--line"];
+    return el("li", { className: "card", style: `--st: var(${fg}); --st-bg: var(${bg})` },
+      el("div", { className: "card-top" },
+        el("span", { className: "cid", textContent: c.id }),
+        el("span", { className: "pill", textContent: c.status })),
+      el("h3", { className: "ctype", textContent: c.type }),
+      el("dl", { className: "cmeta" },
+        el("dt", { textContent: "신고일자" }), el("dd", { className: "mono", textContent: fmtDate(c.date) }),
+        el("dt", { textContent: "지역" }), el("dd", { textContent: c.region }),
+        el("dt", { textContent: "처리기간" }), el("dd", { textContent: c.days != null ? `${c.days}일` : "집계 전" })));
+  }
+
+  function render() {
+    const typeCounts = {}, statusCounts = {};
+    // 칩 숫자: 다른 조건이 적용된 상태에서의 건수
+    const base = (skip) => cases.filter((c) =>
+      (skip === "type" || !state.type || c.type === state.type) &&
+      (skip === "status" || !state.status || c.status === state.status) &&
+      (!state.region || c.region === state.region));
+    for (const c of base("type")) typeCounts[c.type] = (typeCounts[c.type] || 0) + 1;
+    for (const c of base("status")) statusCounts[c.status] = (statusCounts[c.status] || 0) + 1;
+    chipGroup($("typeChips"), types, "type", typeCounts);
+    chipGroup($("statusChips"), STATUS_ORDER, "status", statusCounts);
+    $("region").value = state.region; $("sort").value = state.sort; $("q").value = state.q;
+
+    const list = filtered();
+    $("count").replaceChildren("결과 ", el("span", { className: "mono", textContent: list.length.toLocaleString("ko-KR") }), "건");
+    const act = [state.type, state.status, state.region, state.q && `"${state.q}"`].filter(Boolean);
+    $("activeFilters").textContent = act.length ? `조건: ${act.join(" · ")}` : "전체 사건 표시 중";
+
+    const ul = $("cards");
+    ul.replaceChildren(...list.slice(0, state.shown).map(card));
+    if (!list.length) ul.replaceChildren(el("li", { className: "empty", style: "grid-column:1/-1", textContent: "조건에 맞는 사건이 없습니다. 검색어나 필터를 줄여 보세요." }));
+    const rest = list.length - state.shown;
+    $("more").hidden = rest <= 0;
+    $("more").textContent = `${Math.min(rest, PAGE)}건 더 보기 (남은 ${rest.toLocaleString("ko-KR")}건)`;
+  }
+
+  function renderBand() {
+    const total = cases.length;
+    const cnt = {}; for (const c of cases) cnt[c.status] = (cnt[c.status] || 0) + 1;
+    const closed = (cnt["처리완료"] || 0) + (cnt["이첩"] || 0) + (cnt["기각"] || 0);
+    $("totalCases").textContent = `${total.toLocaleString("ko-KR")}건`;
+    $("closedRate").textContent = `종결 ${closed}건 (${(closed / total * 100).toFixed(1)}%) · 진행 중 ${total - closed}건`;
+    $("bar").replaceChildren(...STATUS_ORDER.map((s) => el("span", { title: `${s} ${cnt[s] || 0}건`, style: `width:${(cnt[s] || 0) / total * 100}%; background: var(${STATUS[s][0]})` })));
+    $("legend").replaceChildren(...STATUS_ORDER.map((s) => {
+      const b = el("button", { type: "button" }, el("i", { style: `background: var(${STATUS[s][0]})` }), s, " ", el("b", { textContent: cnt[s] || 0 }));
+      b.setAttribute("aria-label", `${s} ${cnt[s] || 0}건만 보기`);
+      b.onclick = () => setFilter("status", s);
+      return b;
+    }));
+  }
+
+  let types = [];
+  async function loadCases() {
+    const r = await fetch("data/cases.json");
+    const d = await r.json();
+    cases = d.items;
+    const tc = {}; for (const c of cases) tc[c.type] = (tc[c.type] || 0) + 1;
+    types = Object.keys(tc).sort((a, b) => (a === "기타") - (b === "기타") || tc[b] - tc[a]);
+    const regions = [...new Set(cases.map((c) => c.region))].sort((a, b) => a.localeCompare(b, "ko"));
+    for (const g of regions) $("region").append(el("option", { value: g, textContent: g }));
+    if (!regions.includes(state.region)) state.region = "";
+    const span = cases.map((c) => c.date).sort();
+    $("updated").replaceChildren(`신고 기간 ${fmtDate(span[0])} ~ ${fmtDate(span[span.length - 1])}`, el("br"), `자료 기준 ${d.generatedAt.slice(0, 10).replaceAll("-", ".")}`);
+    renderBand(); render();
+  }
+
+  // 보도자료: ① 서버리스 프록시(/api/rss) → ② 빌드 시 저장한 정적 사본
+  async function loadNews() {
+    let data = null, label = "";
+    try {
+      const r = await fetch("/api/rss", { headers: { Accept: "application/json" } });
+      if (!r.ok) throw 0;
+      data = await r.json();
+      if (!data.items?.length) throw 0;
+      label = "실시간";
+    } catch {
+      try {
+        const r = await fetch("data/rss_snapshot.json");
+        data = await r.json();
+        label = `정적 사본 · ${String(data.collectedAt || "").slice(0, 10).replaceAll("-", ".")} 수집`;
+      } catch { data = null; }
+    }
+    const ol = $("newsList");
+    if (!data) { $("feedState").textContent = "불러오지 못함"; ol.replaceChildren(el("li", { textContent: "보도자료를 불러오지 못했습니다. 아래 '보도자료 전체'에서 확인해 주세요." })); return; }
+    $("feedState").textContent = label;
+    ol.replaceChildren(...data.items.slice(0, 8).map((it) => {
+      const safe = /^https?:\/\//i.test(it.link) ? it.link : "#";
+      return el("li", {},
+        el("a", { href: safe, target: "_blank", rel: "noopener", textContent: it.title }),
+        el("time", { textContent: (it.date || "").replaceAll("-", ".") }));
+    }));
+  }
+
+  async function loadEdu() {
+    const d = await (await fetch("data/education.json")).json();
+    const rows = d.items, valid = rows.filter((r) => r.completion != null);
+    const mean = (a) => a.reduce((s, x) => s + x, 0) / a.length;
+    const exc = rows.filter((r) => r.excellent);
+    const excMin = Math.min(...exc.filter((r) => r.completion != null).map((r) => r.completion));
+    const people = rows.reduce((s, r) => s + (r.participants || 0), 0);
+    const fig = (label, value, unit) => el("div", { className: "fig" }, el("dt", { textContent: label }), el("dd", {}, value, el("small", { textContent: unit })));
+    $("eduSub").textContent = `${rows.length}개 기관 · 이수율 미기재 ${rows.length - valid.length}곳`;
+    $("eduFigs").replaceChildren(
+      fig("평균 교육이수율", mean(valid.map((r) => r.completion)).toFixed(1), "%"),
+      fig("청렴우수기관", String(exc.length), `곳 / ${rows.length}`),
+      fig("교육 참여자", people.toLocaleString("ko-KR"), "명"),
+      fig("평균 연간교육시간", mean(rows.map((r) => r.hours)).toFixed(1), "시간"));
+    const g = {}; for (const r of valid) (g[r.orgType] ||= []).push(r.completion);
+    const entries = Object.entries(g).map(([k, v]) => [k, mean(v), v.length]).sort((a, b) => b[1] - a[1]);
+    $("eduBars").replaceChildren(...entries.map(([k, m, n]) => el("li", { title: `${k} ${n}곳` },
+      el("span", { textContent: k }),
+      el("span", { className: "track" }, el("span", { className: "fill", style: `width:${m}%` }), el("span", { className: "tick", style: `left:calc(${excMin}% - 1px)` })),
+      el("span", { className: "v", textContent: `${m.toFixed(1)}%` }))));
+  }
+
+  let t;
+  $("q").addEventListener("input", (e) => { clearTimeout(t); t = setTimeout(() => { state.q = e.target.value; state.shown = PAGE; render(); }, 120); });
+  $("region").addEventListener("change", (e) => setFilter("region", e.target.value));
+  $("sort").addEventListener("change", (e) => setFilter("sort", e.target.value));
+  $("reset").addEventListener("click", () => { Object.assign(state, { type: "", status: "", region: "", q: "", sort: "new", shown: PAGE }); save(); render(); });
+  $("more").addEventListener("click", () => { state.shown += PAGE; render(); });
+
+  loadCases().catch(() => { $("cards").replaceChildren(el("li", { className: "empty", textContent: "사건 자료를 불러오지 못했습니다. 잠시 후 새로고침해 주세요." })); });
+  loadNews();
+  loadEdu().catch(() => { $("eduSub").textContent = "교육 현황 자료를 불러오지 못했습니다."; });
+})();
+</script>
+</body>
+</html>

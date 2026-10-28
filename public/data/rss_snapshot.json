@@ -1,0 +1,16 @@
+{
+ "feed": "행정안전부 보도자료",
+ "source": "https://www.mois.go.kr/gpms/view/jsp/rss/rss.jsp?ctxCd=1012",
+ "collectedAt": "2026-10-27T16:30:00+09:00",
+ "note": "초기 사본. 배포 빌드 시 scripts/fetch_rss.py가 원문 RSS로 덮어씁니다. 날짜는 수집 시점 기준 게시일입니다.",
+ "items": [
+  {"title": "자동차·가전부터 한우·수산물까지…최대 50% 할인, 「제2회 코리아 그랜드 페스티벌」 시작(10.29~11.15)", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130507", "date": "2026-10-27"},
+  {"title": "나눔과 봉사의 30년, 행정안전부 '민원봉사대상' 30주년 기념행사 개최", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130502", "date": "2026-10-27"},
+  {"title": "반도체 신화의 첫 도면 되살렸다, '최초 4메가 디램(DRAM) 설계도면' 복원", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130503", "date": "2026-10-27"},
+  {"title": "이태원참사 4주기 기억식, 29일 광화문 광장에서 개최", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130504", "date": "2026-10-27"},
+  {"title": "민선 9기 지자체장, 재난안전관리 교육으로 겨울철 재난 대비 태세 갖춘다", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130505", "date": "2026-10-27"},
+  {"title": "\"취업 준비도 똑똑하게\" 청년 취뽀(취업 뽀개기) 돕는 공공서비스", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130471", "date": "2026-10-26"},
+  {"title": "\"나에게 맞는 청년 지원 정책은?\" 청년인턴이 정부24를 통해 살펴봤습니다", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130472", "date": "2026-10-26"},
+  {"title": "각종 기업확인서, 이제 매번 제출하지 않아도 됩니다", "link": "https://www.mois.go.kr/frt/bbs/type010/commonSelectBoardArticle.do?bbsId=BBSMSTR_000000000008&nttId=130473", "date": "2026-10-26"}
+ ]
+}
