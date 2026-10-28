@@ -15,12 +15,15 @@ import argparse
 import csv
 import json
 from datetime import datetime, timezone, timedelta
+import sys
 from pathlib import Path
 
 KST = timezone(timedelta(hours=9))
 
 CASE_FILE = "청렴신고_사건데이터.csv"
 EDU_FILE = "청렴교육_현황.csv"
+CASE_COLS = {"사건ID", "신고유형", "처리상태"}
+EDU_COLS = {"기관코드", "교육이수율"}
 
 CASE_INT = {"처리기간_일", "위반금액_만원"}
 EDU_INT = {"연간교육시간", "교육참여자수"}
@@ -28,9 +31,31 @@ EDU_FLOAT = {"교육이수율"}
 
 
 def read_csv(path: Path) -> list[dict]:
-    with path.open(encoding="utf-8-sig", newline="") as f:
-        return [{k.strip(): (v.strip() if v is not None else "") for k, v in row.items()}
-                for row in csv.DictReader(f)]
+    for enc in ("utf-8-sig", "cp949"):  # 엑셀에서 저장한 CP949 파일도 허용
+        try:
+            with path.open(encoding=enc, newline="") as f:
+                return [{k.strip(): (v.strip() if v is not None else "") for k, v in row.items()}
+                        for row in csv.DictReader(f)]
+        except UnicodeDecodeError:
+            continue
+    raise ValueError(f"인코딩을 읽을 수 없습니다: {path}")
+
+
+def find_csv(src: Path, preferred: str, cols: set) -> Path | None:
+    """파일 이름이 바뀌었거나 깨져도 열 이름으로 CSV를 찾음"""
+    if (src / preferred).is_file():
+        return src / preferred
+    for p in sorted(src.glob("*.csv")):
+        for enc in ("utf-8-sig", "cp949"):
+            try:
+                with p.open(encoding=enc) as f:
+                    header = {h.strip() for h in f.readline().split(",")}
+                break
+            except UnicodeDecodeError:
+                header = set()
+        if cols <= header:
+            return p
+    return None
 
 
 def to_num(value: str, kind):
@@ -82,10 +107,19 @@ def main():
     out.mkdir(parents=True, exist_ok=True)
     generated = datetime.now(KST).isoformat(timespec="seconds")
 
-    cases = convert_cases(read_csv(src / CASE_FILE))
-    edu = convert_edu(read_csv(src / EDU_FILE))
+    jobs = []
+    case_path = find_csv(src, CASE_FILE, CASE_COLS)
+    edu_path = find_csv(src, EDU_FILE, EDU_COLS)
+    if case_path:
+        jobs.append(("cases.json", convert_cases(read_csv(case_path))))
+    if edu_path:
+        jobs.append(("education.json", convert_edu(read_csv(edu_path))))
+    for label, path, json_name in (("신고 사건", case_path, "cases.json"), ("교육 현황", edu_path, "education.json")):
+        if not path:
+            kept = "기존 파일 유지" if (out / json_name).is_file() else "파일 없음 — 페이지에 해당 자료가 표시되지 않음"
+            print(f"[warn] {src}/ 에서 {label} CSV를 찾지 못했습니다. {json_name}: {kept}")
 
-    for name, items in (("cases.json", cases), ("education.json", edu)):
+    for name, items in jobs:
         payload = {"generatedAt": generated, "count": len(items), "items": items}
         (out / name).write_text(json.dumps(payload, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
         print(f"[ok] {out / name}  ({len(items)}건)")
